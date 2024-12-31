@@ -1,4 +1,3 @@
 word2number
 PyPDF2
 pandas
-python3-tk
