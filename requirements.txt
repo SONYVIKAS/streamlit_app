@@ -2,4 +2,3 @@ word2number
 PyPDF2
 pandas
 tkinter
-streamlit
