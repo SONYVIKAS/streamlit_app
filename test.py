@@ -7,24 +7,25 @@ import streamlit as st
 import tkinter as tk
 from tkinter import filedialog
 
-try:
 
-    def select_folder():
-        root = tk.Tk()
-        root.withdraw()
-        folder_path = filedialog.askdirectory(master=root)
-        root.destroy()
-        return folder_path
 
-    selected_folder_path = st.session_state.get("folder_path", None)
-    folder_select_button = st.button("Select Folder")
-    if folder_select_button:
-        selected_folder_path = select_folder()
-        st.session_state.folder_path = selected_folder_path
 
+# Set up tkinter
+root = tk.Tk()
+root.withdraw()
+
+# Make folder picker dialog appear on top of other windows
+root.wm_attributes('-topmost', 1)
+
+# Folder picker button
+st.title('Folder Picker')
+st.write('Please select a folder:')
+clicked = st.button('Folder Picker')
+if clicked:
+    dirname = st.text_input('Selected folder:', filedialog.askdirectory(master=root))
 
     # Folder containing the PDFs
-    pdf_folder = f"{selected_folder_path}"
+    pdf_folder = f"{dirname}"
     output_excel = "extracted_data.csv"  # Save as CSV for clarity
 
     # Initialize a list to store the extracted data
@@ -73,6 +74,4 @@ try:
 
     # Save the DataFrame to an Excel file
     # df.to_csv(output_excel, index=False)
-except:
-    pass
 
