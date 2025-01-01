@@ -21,8 +21,8 @@ if uploaded_files:
         "Service Charge": r"Service Charges?.*\s([\d,]+\.\d{2})",  # Extract Service Charges
         "IGST Amount": r"IGST @\d+%.*?([\d,]+\.\d{2})",  # Extract IGST Amount
         "IGST Rate": r"IGST @(\d+%)",  # Extract IGST Rate
-        "Name from Remarks": r"Remarks:\s*DEL[\w\d]+\s+x\s+\d+\s+([\w\s]+?)\s+IN1",  # Extract name from Remarks
-        "Country Before Visa": r"([A-Za-z]+)\s+""+Visa Fee",  # Extract country before "Visa Fees"
+        "Name": r"Remarks:\s*DEL[\w\d]+\s+x\s+\d+\s+([\w\s]+?)\s+IN1",  # Extract name from Remarks
+        "Country": r"([A-Za-z]+)\s+""+Visa Fee",  # Extract country before "Visa Fees"
     }
 
     # Loop through each uploaded PDF file
