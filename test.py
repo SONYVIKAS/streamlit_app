@@ -1,4 +1,3 @@
-import os
 import re
 from PyPDF2 import PdfReader
 from word2number import w2n
@@ -8,13 +7,10 @@ import streamlit as st
 # Title of the Streamlit App
 st.title("PDF Data Extraction Tool")
 
-# Add a text input for folder path
-selected_folder_path = st.text_input("Enter the path to the folder containing your PDF files:")
+# Add a file uploader to select multiple PDF files
+uploaded_files = st.file_uploader("Upload PDF files", type="pdf", accept_multiple_files=True)
 
-if selected_folder_path and os.path.isdir(selected_folder_path):
-    # Output CSV file name
-    output_excel = "extracted_data.csv"
-
+if uploaded_files:
     # Initialize a list to store the extracted data
     data_list = []
 
@@ -25,32 +21,29 @@ if selected_folder_path and os.path.isdir(selected_folder_path):
         "Service Charge": r"Service Charges?.*\s([\d,]+\.\d{2})",  # Extract Service Charges
     }
 
-    # Loop through each PDF file in the folder
-    for filename in os.listdir(selected_folder_path):
-        if filename.endswith(".pdf"):
-            pdf_path = os.path.join(selected_folder_path, filename)
+    # Loop through each uploaded PDF file
+    for uploaded_file in uploaded_files:
+        # Read the uploaded file
+        reader = PdfReader(uploaded_file)
+        pdf_text = " ".join(page.extract_text() for page in reader.pages if page.extract_text())
 
-            # Open and read the PDF
-            reader = PdfReader(pdf_path)
-            pdf_text = " ".join(page.extract_text() for page in reader.pages if page.extract_text())
+        # Extract data for the current PDF
+        extracted_data = {}
+        for field, pattern in patterns.items():
+            match = re.search(pattern, pdf_text)
+            extracted_data[field] = match.group(1).strip() if match else None
 
-            # Extract data for the current PDF
-            extracted_data = {}
-            for field, pattern in patterns.items():
-                match = re.search(pattern, pdf_text)
-                extracted_data[field] = match.group(1).strip() if match else None
+        # Extract "Total (in words)" and convert to numeric value
+        total_in_words_match = re.search(r"INR\s*(.*?)\s*Only", pdf_text, re.IGNORECASE)
+        if total_in_words_match:
+            total_in_words = total_in_words_match.group(1).strip()
+            try:
+                extracted_data["Total"] = w2n.word_to_num(total_in_words.lower())
+            except ValueError:
+                extracted_data["Total"] = "Conversion Error"
 
-            # Extract "Total (in words)" and convert to numeric value
-            total_in_words_match = re.search(r"INR\\s*(.*?)\\s*Only", pdf_text, re.IGNORECASE)
-            if total_in_words_match:
-                total_in_words = total_in_words_match.group(1).strip()
-                try:
-                    extracted_data["Total"] = w2n.word_to_num(total_in_words.lower())
-                except ValueError:
-                    extracted_data["Total"] = "Conversion Error"
-
-            # Append the extracted data to the list
-            data_list.append(extracted_data)
+        # Append the extracted data to the list
+        data_list.append(extracted_data)
 
     # Create a DataFrame from the extracted data
     df = pd.DataFrame(data_list)
@@ -63,8 +56,8 @@ if selected_folder_path and os.path.isdir(selected_folder_path):
     st.download_button(
         label="Download Extracted Data as CSV",
         data=csv,
-        file_name=output_excel,
+        file_name="extracted_data.csv",
         mime="text/csv",
     )
 else:
-    st.warning("Please enter a valid folder path.")
+    st.warning("Please upload PDF files to proceed.")
