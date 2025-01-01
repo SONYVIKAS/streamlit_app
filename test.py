@@ -4,25 +4,12 @@ from PyPDF2 import PdfReader
 from word2number import w2n
 import pandas as pd
 import streamlit as st
-from tkinter import Tk, filedialog
-
-# Function to pick a folder using tkinter
-def pick_folder():
-    root = Tk()
-    root.withdraw()  # Hide the root window
-    folder_selected = filedialog.askdirectory()
-    root.destroy()
-    return folder_selected
 
 # Title of the Streamlit App
 st.title("PDF Data Extraction Tool")
 
-# Add a button for folder picking
-if st.button("Pick a Folder"):
-    selected_folder_path = pick_folder()
-    st.write(f"Selected Folder: {selected_folder_path}")
-else:
-    selected_folder_path = None
+# Add a text input for folder path
+selected_folder_path = st.text_input("Enter the path to the folder containing your PDF files:")
 
 if selected_folder_path and os.path.isdir(selected_folder_path):
     # Output CSV file name
@@ -54,7 +41,7 @@ if selected_folder_path and os.path.isdir(selected_folder_path):
                 extracted_data[field] = match.group(1).strip() if match else None
 
             # Extract "Total (in words)" and convert to numeric value
-            total_in_words_match = re.search(r"INR\s*(.*?)\s*Only", pdf_text, re.IGNORECASE)
+            total_in_words_match = re.search(r"INR\\s*(.*?)\\s*Only", pdf_text, re.IGNORECASE)
             if total_in_words_match:
                 total_in_words = total_in_words_match.group(1).strip()
                 try:
@@ -80,4 +67,4 @@ if selected_folder_path and os.path.isdir(selected_folder_path):
         mime="text/csv",
     )
 else:
-    st.warning("Please pick a folder to proceed.")
+    st.warning("Please enter a valid folder path.")
