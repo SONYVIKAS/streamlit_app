@@ -3,6 +3,7 @@ import re
 from PyPDF2 import PdfReader
 import pandas as pd
 import streamlit as st
+from word2number import w2n
 
 st.title("PDF Data Extraction Tool")
 
