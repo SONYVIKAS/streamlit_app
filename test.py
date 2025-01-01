@@ -20,7 +20,7 @@ if uploaded_files:
         "Service Charge": r"Service Charges?.*\s([\d,]+\.\d{2})",  # Extract Service Charges
         "IGST Amount": r"IGST @\d+%.*?([\d,]+\.\d{2})",  # Extract IGST Amount
         "IGST Rate": r"IGST @(\d+%)",  # Extract IGST Rate
-        "Country Before Visa": r"([A-Za-z]+)\s*Visa\s*Fees",  # Extract country before "Visa Fees"
+        "Country Before Visa": r"([A-Za-z]+)\s*Visa\s*Fee",  # Extract country before "Visa Fees"
     }
 
     # Loop through each uploaded PDF file
@@ -29,34 +29,29 @@ if uploaded_files:
         reader = PdfReader(uploaded_file)
         pdf_text = " ".join(page.extract_text() for page in reader.pages if page.extract_text())
 
-        # Debug: Print the extracted text
-        st.write("Extracted Text from PDF:", pdf_text)
-
         # Extract data for the current PDF
         extracted_data = {}
         for field, pattern in patterns.items():
-            try:
-                match = re.search(pattern, pdf_text, re.DOTALL)  # Enable multiline matching
-                extracted_data[field] = match.group(1).strip() if match else None
-            except re.error as e:
-                st.error(f"Regex error for field '{field}': {e}")
+            match = re.search(pattern, pdf_text, re.DOTALL)  # Enable multiline matching
+            extracted_data[field] = match.group(1).strip() if match else None
 
         # Append the extracted data to the list
         data_list.append(extracted_data)
 
     # Create a DataFrame from the extracted data
-    # df = pd.DataFrame(data_list)
+    df = pd.DataFrame(data_list)
 
-    # # Display the extracted data in Streamlit
-    # st.dataframe(df)
 
-    # # Provide an option to download the data as a CSV
-    # csv = df.to_csv(index=False)
-    # st.download_button(
-    #     label="Download Extracted Data as CSV",
-    #     data=csv,
-    #     file_name="extracted_data.csv",
-    #     mime="text/csv",
-    # )
+    # Display the DataFrame in Streamlit
+    st.dataframe(df)
+
+    # Provide an option to download the data as a CSV
+    csv = df.to_csv(index=False)
+    st.download_button(
+        label="Download Extracted Data as CSV",
+        data=csv,
+        file_name="extracted_data.csv",
+        mime="text/csv",
+    )
 else:
     st.warning("Please upload PDF files to proceed.")
