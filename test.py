@@ -45,18 +45,18 @@ if uploaded_files:
         data_list.append(extracted_data)
 
     # Create a DataFrame from the extracted data
-    df = pd.DataFrame(data_list)
+    # df = pd.DataFrame(data_list)
 
-    # Display the extracted data in Streamlit
-    st.dataframe(df)
+    # # Display the extracted data in Streamlit
+    # st.dataframe(df)
 
-    # Provide an option to download the data as a CSV
-    csv = df.to_csv(index=False)
-    st.download_button(
-        label="Download Extracted Data as CSV",
-        data=csv,
-        file_name="extracted_data.csv",
-        mime="text/csv",
-    )
+    # # Provide an option to download the data as a CSV
+    # csv = df.to_csv(index=False)
+    # st.download_button(
+    #     label="Download Extracted Data as CSV",
+    #     data=csv,
+    #     file_name="extracted_data.csv",
+    #     mime="text/csv",
+    # )
 else:
     st.warning("Please upload PDF files to proceed.")
