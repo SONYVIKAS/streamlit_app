@@ -12,9 +12,7 @@ genre = st.radio(
     index=None,
 )
 if genre == "visawaale":
-
-
-    # Title of the Streamlit App
+# Title of the Streamlit App
     st.title("visawaale")
 
     # Add a file uploader to select multiple PDF files
@@ -43,8 +41,17 @@ if genre == "visawaale":
             # Extract data for the current PDF
             extracted_data = {}
             for field, pattern in patterns.items():
-                match = re.search(pattern, pdf_text, re.DOTALL)  # Enable multiline matching
+                match = re.search(pattern, pdf_text)
                 extracted_data[field] = match.group(1).strip() if match else None
+
+            # Extract "Total (in words)" and convert to numeric value
+            total_in_words_match = re.search(r"INR\s*(.*?)\s*Only", pdf_text, re.IGNORECASE)
+            if total_in_words_match:
+                total_in_words = total_in_words_match.group(1).strip()
+                try:
+                    extracted_data["Total"] = w2n.word_to_num(total_in_words.lower())
+                except ValueError:
+                    extracted_data["Total"] = "Conversion Error"
 
             # Append the extracted data to the list
             data_list.append(extracted_data)
@@ -52,8 +59,7 @@ if genre == "visawaale":
         # Create a DataFrame from the extracted data
         df = pd.DataFrame(data_list)
 
-
-        # Display the DataFrame in Streamlit
+        # Display the extracted data in Streamlit
         st.dataframe(df)
 
         # Provide an option to download the data as a CSV
@@ -66,6 +72,7 @@ if genre == "visawaale":
         )
     else:
         st.warning("Please upload PDF files to proceed.")
+
 elif genre == "Jetsave":
     # Title of the Streamlit App
     st.title("Jetsave")
