@@ -25,12 +25,11 @@ if genre == "visawaale":
 
         # Patterns to extract specific fields
         patterns = {
-            "Reference No.": r"Reference No\. & Date\.\s*([\w-]+)",  # Extract Reference No.
-            "Other References": r"Other References\s*([\w\d]+)",  # Extract Other References
+            "Invoice No.": r"Reference No\. & Date\.\s*([\w-]+)",  # Extract Reference No.
+            "Booking Id": r"Other References\s*([\w\d]+)",  # Extract Other References
             "Service Charge": r"Service Charges?.*\s([\d,]+\.\d{2})",  # Extract Service Charges
             "IGST Amount": r"IGST @\d+%.*?([\d,]+\.\d{2})",  # Extract IGST Amount
-            "IGST Rate": r"IGST @(\d+%)",  # Extract IGST Rate
-            "Country Before Visa": r"([A-Za-z]+)\s*Visa\s*Fee",  # Extract country before "Visa Fees"
+            "Country": r"([A-Za-z]+)\s*Visa\s*Fee",  # Extract country before "Visa Fees"
         }
 
         # Loop through each uploaded PDF file
