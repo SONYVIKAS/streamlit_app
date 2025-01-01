@@ -19,6 +19,8 @@ if uploaded_files:
         "Reference No.": r"Reference No\. & Date\.\s*([\w-]+)",  # Extract Reference No.
         "Other References": r"Other References\s*([\w\d]+)",  # Extract Other References
         "Service Charge": r"Service Charges?.*\s([\d,]+\.\d{2})",  # Extract Service Charges
+        "IGST Amount": r"IGST @\d+%.*?([\d,]+\.\d{2})",  # Extract IGST Amount
+        "IGST Rate": r"IGST @(\d+%)",  # Extract IGST Rate
     }
 
     # Loop through each uploaded PDF file
