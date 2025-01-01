@@ -88,7 +88,7 @@ elif genre == "Jetsave":
         # Patterns to extract specific fields
         patterns = {
             "Invoice No.": r"Invoice No\s*:\s*DEL\s*([\w/]+)",  # Extract Invoice No.
-            "Corporate": r"Ref No\.:\s*([\w/]+)",  # Extract Reference No.
+            "Booking Id": r"Ref No\.:\s*([\w/]+)",  # Extract Reference No.
             "Pax Name": r"GURGAON\s*(.*?)\s*Corporate",  # Extract Pax Name
             "Country": r"([A-Za-z]+)*\s+VISA Fee",  # Extract country before "Visa Fee"
             "IGST After": r"SGST\(@9%\)\s*0\.00\s*([\d,]+\.\d{2})",  # Extract value after SGST
