@@ -16,7 +16,7 @@ genre = st.radio(
 
 if genre == "visawaale":
         # Title of the Streamlit App
-    st.title("PDF Data Extraction Tool")
+    st.title("Visawaale")
 
     # Add a file uploader to select multiple PDF files
     uploaded_files = st.file_uploader("Upload PDF files", type="pdf", accept_multiple_files=True)
