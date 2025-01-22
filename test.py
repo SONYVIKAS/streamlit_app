@@ -4,6 +4,7 @@ from PyPDF2 import PdfReader
 import pandas as pd
 import streamlit as st
 import pdfplumber
+from word2number import w2n
 
 st.title("PDF Data Extraction Tool")
 
@@ -14,11 +15,11 @@ genre = st.radio(
 )
 
 if genre == "visawaale":
-    # Title of the Streamlit App
-    st.title("visawaale")
+        # Title of the Streamlit App
+    st.title("PDF Data Extraction Tool")
 
-    # Add a file uploader to select multiple PDF files (with a unique key)
-    uploaded_files = st.file_uploader("Upload PDF files", type="pdf", accept_multiple_files=True, key="visawaale_uploader")
+    # Add a file uploader to select multiple PDF files
+    uploaded_files = st.file_uploader("Upload PDF files", type="pdf", accept_multiple_files=True)
 
     if uploaded_files:
         # Initialize a list to store the extracted data
@@ -45,6 +46,15 @@ if genre == "visawaale":
             for field, pattern in patterns.items():
                 match = re.search(pattern, pdf_text)
                 extracted_data[field] = match.group(1).strip() if match else None
+
+            # Extract "Total (in words)" and convert to numeric value
+            total_in_words_match = re.search(r"INR\s*(.*?)\s*Only", pdf_text, re.IGNORECASE)
+            if total_in_words_match:
+                total_in_words = total_in_words_match.group(1).strip()
+                try:
+                    extracted_data["Total"] = w2n.word_to_num(total_in_words.lower())
+                except ValueError:
+                    extracted_data["Total"] = "Conversion Error"
 
             # Append the extracted data to the list
             data_list.append(extracted_data)
